@@ -29,8 +29,8 @@ jobs:
       - name: Set up Python
         run: uv python install 3.10
 
-      - name: Install AkShare (live fetch)
-        run: uv run --with akshare python -c "import akshare; print('akshare', akshare.__version__)"
+      - name: Install deps (akshare + cos sdk)
+        run: uv sync --extra akshare --extra cos
 
       - name: Publish to COS
         env:
@@ -38,4 +38,4 @@ jobs:
           TIANJI_COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
           TIANJI_COS_BUCKET: ${{ vars.COS_BUCKET || 'tj-1310342032' }}
           TIANJI_COS_REGION: ${{ vars.COS_REGION || 'ap-beijing' }}
-        run: uv run --with cos-python-sdk-v5 python scripts/publish.py --fetch
+        run: uv run python scripts/publish.py --fetch

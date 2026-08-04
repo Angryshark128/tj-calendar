@@ -146,7 +146,9 @@ def _fetch_akshare_trade_days() -> dict[int, set[int]]:
     try:
         import akshare as ak  # type: ignore[import-not-found]
     except ImportError as exc:
-        raise RuntimeError("AkShare is required for live fetch. Install with `pip install tj-calendar[data]`.") from exc
+        raise RuntimeError(
+            "AkShare is required for live fetch. Install with `pip install tj-calendar[akshare]`."
+        ) from exc
 
     df = ak.tool_trade_date_hist_sina()
     dates: dict[int, set[int]] = {}

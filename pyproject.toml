@@ -23,6 +23,14 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
 
+[project.optional-dependencies]
+akshare = [
+    "akshare>=1.15.0",
+]
+cos = [
+    "cos-python-sdk-v5>=1.9.20",
+]
+
 [project.urls]
 Homepage = "https://github.com/Angryshark128/tj-calendar"
 Repository = "https://github.com/Angryshark128/tj-calendar"
