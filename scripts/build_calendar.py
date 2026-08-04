@@ -173,14 +173,26 @@ def _by_year(days: list[int]) -> dict[str, list[int]]:
 def _merge_with_live(base: list[int], live: dict[int, set[int]]) -> tuple[list[int], list[int]]:
     """Replace approximation days with AkShare days for published years.
 
+    Live data may extend before/after the coverage window (AkShare goes back
+    to 1990); clamp it to [COVERAGE_START, COVERAGE_END].
+
     Returns (merged_days, years_covered_by_live).
     """
-    live_years = sorted(live)
+    lo = date.fromisoformat(COVERAGE_START)
+    hi = date.fromisoformat(COVERAGE_END)
+    lo_int = lo.year * 10000 + lo.month * 100 + lo.day
+    hi_int = hi.year * 10000 + hi.month * 100 + hi.day
+
+    live_years: list[int] = []
     merged = set(base)
-    for year in live_years:
+    for year in sorted(live):
+        kept = {d for d in live[year] if lo_int <= d <= hi_int}
+        if not kept:
+            continue
         # Remove the approximation for that year, then add the authoritative set.
         merged = {d for d in merged if d // 10000 != year}
-        merged |= live[year]
+        merged |= kept
+        live_years.append(year)
     return sorted(merged), live_years
 
 
