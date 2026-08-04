@@ -1,0 +1,70 @@
+[project]
+name = "tj-calendar"
+version = "0.1.0"
+description = "Offline-first China market trading calendar."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Tianji Contributors", email = "hello@tianji.dev" },
+]
+keywords = ["market-research", "tianji", "china-market", "quantitative"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+[project.urls]
+Homepage = "https://github.com/Angryshark128/tj-calendar"
+Repository = "https://github.com/Angryshark128/tj-calendar"
+Documentation = "https://github.com/Angryshark128/tj-calendar#readme"
+Issues = "https://github.com/Angryshark128/tj-calendar/issues"
+Ecosystem = "https://github.com/Angryshark128/tianji"
+
+[project.scripts]
+tjcal = "tj_calendar.cli:main"
+
+# 生态统一 extras 命名：
+# - [akshare], [pandas], [parquet] 等可选能力由各模块自行定义
+# - 轻量核心：不默认安装 pandas/numpy/pyarrow/akshare/LLM SDK
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tj_calendar"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "N"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.16.0",
+    "pyright>=1.1.411",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+testpaths = ["tests"]

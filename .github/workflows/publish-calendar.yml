@@ -1,0 +1,41 @@
+name: publish-calendar
+
+# Daily check: rebuild the calendar (AkShare live fetch + curated fallback),
+# validate, and publish to COS only when the bundle actually changed.
+# Credentials come from GitHub Actions secrets:
+#   COS_SECRET_ID, COS_SECRET_KEY
+on:
+  schedule:
+    # 02:00 UTC daily (10:00 Asia/Shanghai)
+    - cron: "0 2 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Rebuild & publish calendar
+    runs-on: ubuntu-latest
+    if: ${{ vars.ENABLE_CALENDAR_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.10
+
+      - name: Install AkShare (live fetch)
+        run: uv run --with akshare python -c "import akshare; print('akshare', akshare.__version__)"
+
+      - name: Publish to COS
+        env:
+          TIANJI_COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+          TIANJI_COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+          TIANJI_COS_BUCKET: ${{ vars.COS_BUCKET || 'tj-1310342032' }}
+          TIANJI_COS_REGION: ${{ vars.COS_REGION || 'ap-beijing' }}
+        run: uv run --with cos-python-sdk-v5 python scripts/publish.py --fetch

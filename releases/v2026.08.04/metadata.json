@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "calendar_version": "2026.08.04",
+  "bundle_id": "tj-calendar-2026.08.04",
+  "sha256": "e2fc470f50333599602ed060570fbb6e056c83a6e71868ffd1fb34ebeb8a7adc",
+  "bundle_url": "https://<BUCKET>.cos.<REGION>.myqcloud.com/tj-calendar/v2026.08.04/calendar-bundle.json",
+  "generated_at": "2026-08-04T00:00:00+08:00"
+}
