@@ -103,7 +103,8 @@ HOLIDAYS: dict[int, list[tuple[str, str]]] = {
     ],
 }
 
-COVERAGE_START = "2000-01-01"
+# Coverage: full history from the earliest Shanghai Stock Exchange trading day.
+COVERAGE_START = "1990-12-19"
 COVERAGE_END = "2035-12-31"
 BSE_START = "2021-11-15"
 

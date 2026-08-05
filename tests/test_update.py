@@ -25,7 +25,7 @@ BUNDLE_JSON = {
     "timezone": "Asia/Shanghai",
     "markets": {
         "CN_A_SHARE": {
-            "coverage_start": "2000-01-01",
+            "coverage_start": "1990-12-19",
             "coverage_end": "2035-12-31",
             "years": {"2026": [20260803, 20260804, 20260805]},
         },

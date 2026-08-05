@@ -10,7 +10,7 @@ Tianji Calendar 是 [Tianji](https://github.com/Angryshark128/tianji) 开源市�
 
 - 离线优先：运行时完全不需要网络
 - 市场感知的交易日历模型（`CN_A_SHARE`、`SSE`、`SZSE`、`BSE`）
-- 内置中国 A 股交易日历（2000–2035）
+- 内置中国 A 股交易日历（1990–2035）
 - 判断某天是否交易日、前后交易日、区间交易日查询
 - 简洁的 Python API 与 CLI
 - 显式导入与更新流程（数据版本与代码版本分离）
@@ -75,7 +75,7 @@ tjcal range 2026-08-03 2026-08-07
 
 tjcal info
 # market: CN_A_SHARE
-# coverage_start: 2000-01-01
+# coverage_start: 1990-12-19
 # coverage_end: 2035-12-31
 # trade_day_count: 9226
 
@@ -125,7 +125,7 @@ is_trade_day("2026-08-04")
 
 ## 数据说明
 
-- 覆盖范围：`CN_A_SHARE` / `SSE` / `SZSE` 自 2000-01-01 至 2035-12-31；`BSE` 自首个交易日 2021-11-15 起。
+- 覆盖范围：`CN_A_SHARE` / `SSE` / `SZSE` 自 1990-12-19 至 2035-12-31；`BSE` 自首个交易日 2021-11-15 起。
 - 内置数据编码了已知的 A 股节假日休市（2019–2027）；更早和更晚的年份使用工作日近似，标记为 best-effort。
 - 查询从不联网。更新日历是显式操作。
 

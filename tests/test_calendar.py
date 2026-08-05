@@ -69,7 +69,7 @@ def test_out_of_range_raises() -> None:
     with pytest.raises(CalendarRangeError):
         is_trade_day("2036-01-05")
     with pytest.raises(CalendarRangeError):
-        is_trade_day("1999-12-31")
+        is_trade_day("1989-12-31")  # before coverage start (1990-12-19)
 
 
 def test_before_market_exists_raises() -> None:
@@ -119,7 +119,7 @@ def test_trade_days_between_includes_endpoints() -> None:
 def test_get_calendar_info() -> None:
     info = get_calendar_info()
     assert info["market"] == "CN_A_SHARE"
-    assert info["coverage_start"] == "2000-01-01"
+    assert info["coverage_start"] == "1990-12-19"
     assert info["coverage_end"] == "2035-12-31"
     assert info["trade_day_count"] > 0
 

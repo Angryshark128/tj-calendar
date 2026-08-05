@@ -12,7 +12,7 @@ and provides simple APIs for trading-day queries.
 
 - Offline-first: no network required at runtime
 - Market-aware trading calendar model (`CN_A_SHARE`, `SSE`, `SZSE`, `BSE`)
-- Built-in China A-share trading calendar (2000–2035)
+- Built-in China A-share trading calendar (1990–2035)
 - Trading-day, previous, next, and range queries
 - Simple Python API and CLI
 - Explicit import and update workflow (data versioned separately from code)
@@ -78,7 +78,7 @@ tjcal range 2026-08-03 2026-08-07
 
 tjcal info
 # market: CN_A_SHARE
-# coverage_start: 2000-01-01
+# coverage_start: 1990-12-19
 # coverage_end: 2035-12-31
 # trade_day_count: 9226
 
@@ -131,7 +131,7 @@ calendar on failure — it never destroys a currently usable dataset.
 
 ## Data
 
-- Coverage: `CN_A_SHARE` / `SSE` / `SZSE` from 2000-01-01 to 2035-12-31; `BSE`
+- Coverage: `CN_A_SHARE` / `SSE` / `SZSE` from 1990-12-19 to 2035-12-31; `BSE`
   from its first trading day 2021-11-15.
 - Built-in data encodes known A-share holiday closures (2019–2027); earlier and
   later years use a weekday approximation and are marked best-effort.

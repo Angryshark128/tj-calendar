@@ -26,7 +26,7 @@
 ```json
 "CN_A_SHARE": {
   "name": "China A-share market",
-  "coverage_start": "2000-01-01",
+  "coverage_start": "1990-12-19",
   "coverage_end": "2035-12-31",
   "years": { "2026": [20260803, 20260804, 20260805] }
 }
@@ -38,9 +38,9 @@
 
 | market | 名称 | coverage_start |
 | --- | --- | --- |
-| CN_A_SHARE | China A-share market | 2000-01-01 |
-| SSE | Shanghai Stock Exchange | 2000-01-01 |
-| SZSE | Shenzhen Stock Exchange | 2000-01-01 |
+| CN_A_SHARE | China A-share market | 1990-12-19 |
+| SSE | Shanghai Stock Exchange | 1990-12-19 |
+| SZSE | Shenzhen Stock Exchange | 1990-12-19 |
 | BSE | Beijing Stock Exchange | 2021-11-15 |
 
 ### special_closures
@@ -59,10 +59,12 @@
 
 ### sources
 
-数据来源记录，保证可追溯：
+数据来源记录，保证可追溯。**以国家公布的节假日安排为权威**，AkShare 负责融合与交叉验证：
 
-- `manual`：内置权威节假日清单（2019-2027）
-- `akshare_sina`：AkShare 新浪接口拉取的已公布年份
+- `manual`：国家/交易所公布的节假日清单（2019-2027），人工编码核对
+- `akshare_sina`：AkShare 新浪接口拉取的交易日，与官方清单交叉验证
+
+AkShare 不是唯一来源，只作为融合验证手段。
 
 ## 构建（scripts/build_calendar.py）
 
@@ -73,8 +75,8 @@ uv run python scripts/build_calendar.py          # offline：内置清单 + 工�
 uv run python scripts/build_calendar.py --fetch  # 合并 AkShare 已公布年份
 ```
 
-- 内置节假日清单编码在脚本 `HOLIDAYS` 中（2019-2027），其余年份工作日近似
-- `--fetch` 从 AkShare 拉已公布年份真实交易日，**裁剪到 `[2000-01-01, 2035-12-31]`**（AkShare 数据可回溯到 1990 年），仅保留窗口内日期
+- 内置节假日清单编码在脚本 `HOLIDAYS` 中（2019-2027），以国家公布为准人工核对
+- `--fetch` 从 AkShare 拉已公布年份交易日，**与官方清单交叉验证**后合并，**裁剪到 `[1990-12-19, 2035-12-31]`**，仅保留窗口内日期
 - 已公布年份用真实数据覆盖近似值；未公布年份回退内置/best-effort
 - 结果写入 `src/tj_calendar/data/calendar-bundle.json`
 

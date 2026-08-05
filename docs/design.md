@@ -11,16 +11,17 @@
 2. **显式更新**：`check-update` / `update` / `ensure_fresh` 才触网
 3. **不猜超范围**：日期超出市场覆盖范围抛 `CalendarRangeError`，不按工作日猜测
 4. **数据/代码版本分离**：`calendar_version`（YYYY.MM.DD）独立于包版本
-5. **单一权威 bundle**：普通用户只消费官方 `calendar-bundle.json`，AkShare 仅维护者侧用
-6. **更新源必配不内置**：`TIANJI_CALENDAR_METADATA_URL` / `TIANJI_CALENDAR_MIRROR_URLS`，未配报清晰错误
+5. **单一权威 bundle**：普通用户只消费官方 `calendar-bundle.json`
+6. **国家公布为准，AkShare 验证**：以国务院/交易所公布的节假日安排为权威数据源，AkShare 负责融合与交叉验证，不作为唯一来源
+7. **更新源必配不内置**：`TIANJI_CALENDAR_METADATA_URL` / `TIANJI_CALENDAR_MIRROR_URLS`，未配报清晰错误
 
 ## 市场
 
 | market | coverage_start | coverage_end |
 | --- | --- | --- |
-| CN_A_SHARE（默认） | 2000-01-01 | 2035-12-31 |
-| SSE | 2000-01-01 | 2035-12-31 |
-| SZSE | 2000-01-01 | 2035-12-31 |
+| CN_A_SHARE（默认） | 1990-12-19 | 2035-12-31 |
+| SSE | 1990-12-19 | 2035-12-31 |
+| SZSE | 1990-12-19 | 2035-12-31 |
 | BSE | 2021-11-15 | 2035-12-31 |
 
 ## Python API
@@ -82,7 +83,7 @@ TianjiCalendarError
 
 ## 数据维护
 
-构建（内置清单 + AkShare 合并）、校验、COS 发布、GitHub Actions 自动发布：见 **`docs/data-maintenance.md`**。
+以国家公布的节假日安排为权威，AkShare 融合验证，构建 → 校验 → COS 发布 → GitHub Actions 自动发布：见 **`docs/data-maintenance.md`**。
 
 ## 项目结构
 
