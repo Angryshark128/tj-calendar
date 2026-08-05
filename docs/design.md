@@ -12,7 +12,7 @@
 3. **不猜超范围**：日期超出市场覆盖范围抛 `CalendarRangeError`，不按工作日猜测
 4. **数据/代码版本分离**：`calendar_version`（YYYY.MM.DD）独立于包版本
 5. **单一权威 bundle**：普通用户只消费官方 `calendar-bundle.json`
-6. **国家公布为准，AkShare 验证**：以国务院/交易所公布的节假日安排为权威数据源，AkShare 负责融合与交叉验证，不作为唯一来源
+6. **国家公布为准，AkShare 补充**：以国务院/交易所公布的节假日安排为权威，AkShare 负责融合验证并补充缺失区间，不作为唯一来源
 7. **更新源必配不内置**：`TIANJI_CALENDAR_METADATA_URL` / `TIANJI_CALENDAR_MIRROR_URLS`，未配报清晰错误
 
 ## 市场
@@ -101,7 +101,7 @@ tests/            test_calendar test_update
 1. 在线更新提前落地（原计划 v0.3 → v0.1.0）
 2. `tjcal import` 未实现，留待后续
 3. 不内置默认更新源 URL（环境变量必填）
-4. AkShare 自动合并进发布流水线，并裁剪到覆盖窗口
+4. AkShare 自动融合进发布流水线：以国家公布为准，AkShare 验证并补充缺失区间，裁剪到覆盖窗口
 5. `sources` 记录来源可追溯
 6. 发布流水线脚本化 + GitHub Actions 定时 + 幂等
 7. COS 前缀可配置（`TIANJI_COS_PREFIX`）
