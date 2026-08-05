@@ -61,13 +61,9 @@ update → 读本地版本（local metadata→local bundle→bundled）
 
 ## 数据格式
 
-`calendar-bundle.json`：
+`calendar-bundle.json`：顶层含 `schema_version / calendar_version / bundle_id / timezone / generated_at / markets / special_closures / sources`。`markets.<m>.years` 存整数日期 `YYYYMMDD`。`sources` 记录来源（manual / akshare_sina）可追溯。
 
-- 顶层：`schema_version / calendar_version / bundle_id / timezone / generated_at / markets / special_closures / sources`
-- `markets.<m>.years`：`{ "2026": [20260803, ...] }`，日期整数 `YYYYMMDD`，有序、不重复、无周末、覆盖范围内
-- `sources`：记录数据来源与年份（manual / akshare_sina），可追溯
-
-详见 `docs/data-format.md`。
+完整规范见 **`docs/data-maintenance.md`**。
 
 ## 加载与存储
 
@@ -84,26 +80,16 @@ TianjiCalendarError
 └── CalendarUpdateError   更新失败
 ```
 
-## 维护者流水线
+## 数据维护
 
-```
-build_calendar.py --fetch   # 内置清单 + AkShare 合并，裁剪到覆盖窗口
-  → validate_calendar.py     # 版本/排序/重复/周末/BSE 起始校验
-  → publish.py               # 构建→校验→上传 calendar/v<ver>/→拉回比对 sha256→最后更新 latest/metadata.json
-  → GitHub Actions 每天 02:00 UTC 自动跑
-```
-
-- `--fetch`：AkShare 拉已公布年份真实交易日，覆盖近似值；未公布年份回退内置/best-effort
-- 幂等：远端版本+sha256 一致则跳过
-- COS 配置全走环境变量：`TIANJI_COS_BUCKET/REGION/PREFIX/SECRET_ID/SECRET_KEY`；密钥必配，子账号最小权限
-- extras：`[akshare]`（拉取）、`[cos]`（发布）；核心包零第三方依赖
+构建（内置清单 + AkShare 合并）、校验、COS 发布、GitHub Actions 自动发布：见 **`docs/data-maintenance.md`**。
 
 ## 项目结构
 
 ```
 src/tj_calendar/  __init__ calendar loader update cli types errors data/
 scripts/          build_calendar validate_calendar publish
-docs/             design data-format
+docs/             design data-format data-maintenance
 .github/workflows/ ci release publish-calendar
 releases/         v<version>/ + latest/metadata.json
 tests/            test_calendar test_update
