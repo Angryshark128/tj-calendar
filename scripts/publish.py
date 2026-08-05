@@ -175,6 +175,11 @@ def main() -> int:
         remote_sha = _remote_version_sha256(client, f"{version_dir}/calendar-bundle.json.sha256")
         if remote_sha == full_sha:
             print(f"  already published: {version} with matching sha256; nothing to do")
+            # Backfill content_sha256 on legacy metadata so future runs can
+            # detect content changes correctly (transition from old format).
+            if not remote_meta.get("content_sha256"):
+                print("  backfilling content_sha256 in latest metadata")
+                _upload_bytes(client, _key("latest/metadata.json"), metadata_body, "application/json")
             return 0
         print("  version exists but sha256 differs; re-publishing versioned artifacts")
 
