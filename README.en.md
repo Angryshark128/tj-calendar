@@ -2,6 +2,11 @@
 
 # Tianji Calendar
 
+[![PyPI version](https://img.shields.io/pypi/v/tj-calendar?color=4b6ef5&label=pypi)](https://pypi.org/project/tj-calendar/)
+[![PyPI - Python](https://img.shields.io/pypi/pyversions/tj-calendar?color=4b6ef5)](https://pypi.org/project/tj-calendar/)
+[![CI](https://github.com/Angryshark128/tj-calendar/actions/workflows/ci.yml/badge.svg)](https://github.com/Angryshark128/tj-calendar/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Offline-first China market trading calendar for Python.
 
 Tianji Calendar is part of the [Tianji](https://github.com/Angryshark128/tianji)

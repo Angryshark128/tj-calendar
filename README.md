@@ -2,6 +2,11 @@
 
 # Tianji Calendar
 
+[![PyPI version](https://img.shields.io/pypi/v/tj-calendar?color=4b6ef5&label=pypi)](https://pypi.org/project/tj-calendar/)
+[![PyPI - Python](https://img.shields.io/pypi/pyversions/tj-calendar?color=4b6ef5)](https://pypi.org/project/tj-calendar/)
+[![CI](https://github.com/Angryshark128/tj-calendar/actions/workflows/ci.yml/badge.svg)](https://github.com/Angryshark128/tj-calendar/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 离线优先的中国市场交易日历工具。
 
 Tianji Calendar 是 [Tianji](https://github.com/Angryshark128/tianji) 开源市场研究工具生态的组成部分。运行时无需联网，提供简洁的交易日查询 API 与 CLI。
