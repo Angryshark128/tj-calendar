@@ -122,7 +122,7 @@ Keep data fresh before querying in Python:
 ```python
 from tj_calendar import ensure_fresh, is_trade_day
 
-ensure_fresh()       # silently skips when already current; fetches only metadata
+ensure_fresh()  # silently skips when already current; fetches only metadata
 is_trade_day("2026-08-04")
 ```
 

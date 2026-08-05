@@ -117,7 +117,7 @@ Python 中每次调用前保证数据最新：
 ```python
 from tj_calendar import ensure_fresh, is_trade_day
 
-ensure_fresh()       # 数据已最新时静默跳过，仅拉 metadata
+ensure_fresh()  # 数据已最新时静默跳过，仅拉 metadata
 is_trade_day("2026-08-04")
 ```
 
