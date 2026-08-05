@@ -108,9 +108,16 @@ COVERAGE_START = "1990-12-19"
 COVERAGE_END = "2035-12-31"
 BSE_START = "2021-11-15"
 
-# Date the running bundle was generated (updated by the publish pipeline).
-CALENDAR_VERSION = "2026.08.04"
-BUNDLE_ID = f"tj-calendar-{CALENDAR_VERSION}"
+
+def default_calendar_version() -> str:
+    """Candidate version for a fresh build: today's date (YYYY.MM.DD).
+
+    The publish pipeline only uses this when content actually changed; if the
+    bundle is unchanged it reuses the remote version so no new folder is made.
+    """
+    from datetime import date as _date
+
+    return _date.today().strftime("%Y.%m.%d")
 
 
 def _days_in_year(year: int) -> int:
@@ -197,7 +204,7 @@ def _merge_with_live(base: list[int], live: dict[int, set[int]]) -> tuple[list[i
     return sorted(merged), live_years
 
 
-def build_bundle(fetch: bool = False) -> dict:
+def build_bundle(fetch: bool = False, version: str | None = None) -> dict:
     start = date.fromisoformat(COVERAGE_START)
     end = date.fromisoformat(COVERAGE_END)
     cn_days = _trade_days(start, end)
@@ -206,6 +213,9 @@ def build_bundle(fetch: bool = False) -> dict:
     if fetch:
         live = _fetch_akshare_trade_days()
         cn_days, live_years = _merge_with_live(cn_days, live)
+
+    calendar_version = version or default_calendar_version()
+    bundle_id = f"tj-calendar-{calendar_version}"
 
     sources: list[dict] = [
         {
@@ -230,8 +240,8 @@ def build_bundle(fetch: bool = False) -> dict:
 
     return {
         "schema_version": 1,
-        "calendar_version": CALENDAR_VERSION,
-        "bundle_id": BUNDLE_ID,
+        "calendar_version": calendar_version,
+        "bundle_id": bundle_id,
         "timezone": "Asia/Shanghai",
         "generated_at": "2026-08-04T00:00:00+08:00",
         "markets": {

@@ -108,8 +108,8 @@ def main() -> int:
         _require_secrets()
 
     print("1/5 building bundle...")
+    # Build with a candidate version first; we decide the real version below.
     bundle = build_bundle(fetch=args.fetch)
-    version = bundle["calendar_version"]
     body = json.dumps(bundle, indent=2, ensure_ascii=False).encode("utf-8")
     sha256 = hashlib.sha256(body).hexdigest()
 
@@ -120,6 +120,28 @@ def main() -> int:
             print(f"  - {e}", file=sys.stderr)
         print("validation FAILED; aborting", file=sys.stderr)
         return 1
+
+    # Decide the version: reuse the remote one when content is unchanged, so
+    # daily runs don't create a new folder every day. Only when content differs
+    # do we stamp today's date as a new version.
+    if not args.dry_run:
+        client, _ = _client()
+        remote_meta = _remote_metadata(client)
+    else:
+        client, remote_meta = None, None
+
+    if remote_meta and remote_meta.get("sha256") == sha256:
+        # Content identical to what's already published.
+        version = remote_meta["calendar_version"]
+        print(f"  content unchanged (sha256 {sha256[:12]}...); keeping version {version}")
+    else:
+        version = bundle["calendar_version"]  # today's date
+        print(f"  content changed; new version {version}")
+
+    bundle["calendar_version"] = version
+    bundle["bundle_id"] = f"tj-calendar-{version}"
+    body = json.dumps(bundle, indent=2, ensure_ascii=False).encode("utf-8")
+    sha256 = hashlib.sha256(body).hexdigest()
 
     print("3/5 preparing artifacts...")
     version_dir = _key(f"v{version}")
@@ -146,8 +168,6 @@ def main() -> int:
         return 0
 
     print("4/5 checking remote state...")
-    client, _ = _client()
-    remote_meta = _remote_metadata(client)
     if remote_meta and remote_meta.get("calendar_version") == version:
         remote_sha = _remote_version_sha256(client, f"{version_dir}/calendar-bundle.json.sha256")
         if remote_sha == sha256:
