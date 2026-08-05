@@ -204,6 +204,23 @@ def _merge_with_live(base: list[int], live: dict[int, set[int]]) -> tuple[list[i
     return sorted(merged), live_years
 
 
+def content_hash(bundle: dict) -> str:
+    """Hash of the actual calendar content, excluding version metadata.
+
+    calendar_version / bundle_id are stamped at publish time and must not
+    influence change detection, otherwise every daily run looks "changed".
+    Only markets + sources reflect real data changes.
+    """
+    import hashlib
+
+    payload = json.dumps(
+        {"markets": bundle["markets"], "sources": bundle.get("sources", [])},
+        sort_keys=True,
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
 def build_bundle(fetch: bool = False, version: str | None = None) -> dict:
     start = date.fromisoformat(COVERAGE_START)
     end = date.fromisoformat(COVERAGE_END)

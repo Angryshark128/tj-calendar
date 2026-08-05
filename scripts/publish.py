@@ -30,7 +30,7 @@ import os
 import sys
 from pathlib import Path
 
-from build_calendar import build_bundle
+from build_calendar import build_bundle, content_hash
 from validate_calendar import validate
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -108,10 +108,11 @@ def main() -> int:
         _require_secrets()
 
     print("1/5 building bundle...")
-    # Build with a candidate version first; we decide the real version below.
+    # Build with a candidate version (today's date); the real version is
+    # decided below based on whether calendar content actually changed.
     bundle = build_bundle(fetch=args.fetch)
     body = json.dumps(bundle, indent=2, ensure_ascii=False).encode("utf-8")
-    sha256 = hashlib.sha256(body).hexdigest()
+    full_sha = hashlib.sha256(body).hexdigest()
 
     print("2/5 validating bundle...")
     errors = validate(bundle)
@@ -121,19 +122,20 @@ def main() -> int:
         print("validation FAILED; aborting", file=sys.stderr)
         return 1
 
-    # Decide the version: reuse the remote one when content is unchanged, so
-    # daily runs don't create a new folder every day. Only when content differs
-    # do we stamp today's date as a new version.
+    # Decide the version. content_hash excludes calendar_version/bundle_id, so
+    # a daily run with unchanged data produces the same hash -> keep the remote
+    # version and skip the upload (no new folder). Only when the calendar data
+    # actually differs do we stamp today's date as a new version.
     if not args.dry_run:
         client, _ = _client()
         remote_meta = _remote_metadata(client)
     else:
         client, remote_meta = None, None
 
-    if remote_meta and remote_meta.get("sha256") == sha256:
-        # Content identical to what's already published.
+    chash = content_hash(bundle)
+    if remote_meta and remote_meta.get("content_sha256") == chash:
         version = remote_meta["calendar_version"]
-        print(f"  content unchanged (sha256 {sha256[:12]}...); keeping version {version}")
+        print(f"  content unchanged ({chash[:12]}...); keeping version {version}")
     else:
         version = bundle["calendar_version"]  # today's date
         print(f"  content changed; new version {version}")
@@ -141,19 +143,20 @@ def main() -> int:
     bundle["calendar_version"] = version
     bundle["bundle_id"] = f"tj-calendar-{version}"
     body = json.dumps(bundle, indent=2, ensure_ascii=False).encode("utf-8")
-    sha256 = hashlib.sha256(body).hexdigest()
+    full_sha = hashlib.sha256(body).hexdigest()
 
     print("3/5 preparing artifacts...")
     version_dir = _key(f"v{version}")
     artifacts: list[tuple[str, bytes, str]] = [
         (f"{version_dir}/calendar-bundle.json", body, "application/json"),
-        (f"{version_dir}/calendar-bundle.json.sha256", (sha256 + "\n").encode(), "text/plain"),
+        (f"{version_dir}/calendar-bundle.json.sha256", (full_sha + "\n").encode(), "text/plain"),
     ]
     metadata = {
         "schema_version": 1,
         "calendar_version": version,
         "bundle_id": bundle["bundle_id"],
-        "sha256": sha256,
+        "sha256": full_sha,
+        "content_sha256": chash,
         "bundle_url": _remote_url(f"{version_dir}/calendar-bundle.json"),
         "generated_at": bundle["generated_at"],
     }
@@ -161,7 +164,7 @@ def main() -> int:
 
     if args.dry_run:
         print("dry-run: artifacts ready (skipping upload)")
-        print(f"  version={version} sha256={sha256}")
+        print(f"  version={version} sha256={full_sha[:16]}... content={chash[:12]}...")
         for key, body, _ in artifacts:
             print(f"  {key} ({len(body)} bytes)")
         print(f"  {_key('latest/metadata.json')} ({len(metadata_body)} bytes)")
@@ -170,7 +173,7 @@ def main() -> int:
     print("4/5 checking remote state...")
     if remote_meta and remote_meta.get("calendar_version") == version:
         remote_sha = _remote_version_sha256(client, f"{version_dir}/calendar-bundle.json.sha256")
-        if remote_sha == sha256:
+        if remote_sha == full_sha:
             print(f"  already published: {version} with matching sha256; nothing to do")
             return 0
         print("  version exists but sha256 differs; re-publishing versioned artifacts")
@@ -181,13 +184,13 @@ def main() -> int:
 
     # Verify upload by re-fetching and comparing sha256.
     remote_sha = _remote_sha256(client, f"{version_dir}/calendar-bundle.json")
-    if remote_sha != sha256:
+    if remote_sha != full_sha:
         print(
-            f"error: uploaded bundle sha256 mismatch ({remote_sha} != {sha256}); not updating latest",
+            f"error: uploaded bundle sha256 mismatch ({remote_sha} != {full_sha}); not updating latest",
             file=sys.stderr,
         )
         return 1
-    print(f"  verified: remote bundle sha256 matches ({remote_sha})")
+    print(f"  verified: remote bundle sha256 matches ({remote_sha[:16]}...)")
 
     print("5/5 updating latest metadata...")
     _upload_bytes(client, _key("latest/metadata.json"), metadata_body, "application/json")
