@@ -21,6 +21,12 @@ Tianji Calendar 是 [Tianji](https://github.com/Angryshark128/tianji) 开源市�
 - 显式导入与更新流程（数据版本与代码版本分离）
 - 不需要 Tushare token
 
+## 文档
+
+- [API 参考](docs/api.md) — 查询/更新函数、TradingCalendar 类与 CLI
+- [数据维护](docs/data-maintenance.md) — 更新源配置与数据维护
+- [设计文档](docs/design.md) — 生态定位与设计约束
+
 ## 安装
 
 ```bash

@@ -23,6 +23,12 @@ and provides simple APIs for trading-day queries.
 - Explicit import and update workflow (data versioned separately from code)
 - No Tushare token required
 
+## Documentation
+
+- [API reference](docs/api.md) — query / update functions, TradingCalendar, CLI
+- [Data maintenance](docs/data-maintenance.md) — update source config and maintenance
+- [Design doc](docs/design.md) — positioning and design constraints
+
 ## Install
 
 ```bash
