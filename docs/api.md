@@ -32,9 +32,9 @@ from datetime import date
 
 from tj_calendar import is_trade_day, next_trade_day, trade_days_between
 
-is_trade_day("2026-08-06")                 # True（工作日）
-is_trade_day(date(2026, 8, 8))             # False（周六）
-next_trade_day("2026-08-07")               # datetime.date(2026, 8, 10)
+is_trade_day("2026-08-06")  # True（工作日）
+is_trade_day(date(2026, 8, 8))  # False（周六）
+next_trade_day("2026-08-07")  # datetime.date(2026, 8, 10)
 
 trade_days_between("2026-08-03", "2026-08-07")
 # [date(2026,8,3), date(2026,8,4), date(2026,8,5), date(2026,8,6), date(2026,8,7)]
@@ -55,10 +55,10 @@ def is_trade_day(value: DateInput, market: str = "CN_A_SHARE") -> bool
 ```python
 from tj_calendar import is_trade_day
 
-is_trade_day("2026-08-06")            # True
-is_trade_day("2026-08-08")            # False
-is_trade_day("2026-10-01")            # False（国庆节）
-is_trade_day(20260806)                # True（int 格式）
+is_trade_day("2026-08-06")  # True
+is_trade_day("2026-08-08")  # False
+is_trade_day("2026-10-01")  # False（国庆节）
+is_trade_day(20260806)  # True（int 格式）
 ```
 
 ### next_trade_day
@@ -134,11 +134,11 @@ get_calendar_info()
 from tj_calendar.calendar import TradingCalendar
 
 cal = TradingCalendar.load("SSE")
-cal.market                 # "SSE"
+cal.market  # "SSE"
 cal.is_trade_day("2026-08-06")
 cal.next_trade_day("2026-08-07")
 cal.trade_days_between("2026-08-03", "2026-08-07")
-cal.info()                 # 同 get_calendar_info()
+cal.info()  # 同 get_calendar_info()
 ```
 
 | 方法 | 说明 |
